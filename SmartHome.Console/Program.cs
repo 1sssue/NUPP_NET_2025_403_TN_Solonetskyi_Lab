@@ -2,42 +2,35 @@
 using System.Text;
 
 Console.OutputEncoding = Encoding.UTF8;
-Console.InputEncoding = Encoding.UTF8;
+var service = new SmartHomeServiceAsync<SmartDevice>();
 
-// Створення сервісу для пристроїв
-var deviceService = new SmartHomeService<SmartDevice>();
+Console.WriteLine("Паралельне створення 1100 пристроїв...");
 
-// Створення об'єктів
-var lamp = new LightDevice("Настільна лампа", 80);
-var conditioner = new ClimateDevice("Кондиціонер вітальні", 22.5);
-
-// Підписка на подію
-lamp.OnStatusChanged += (msg) => Console.WriteLine($"[ПОДІЯ]: {msg}");
-
-// 1. Тест CRUD: Create
-deviceService.Create(lamp);
-deviceService.Create(conditioner);
-
-Console.WriteLine("--- Список пристроїв після додавання ---");
-foreach (var dev in deviceService.ReadAll())
+// 1. Багатопотокове створення (Parallel.For)
+Parallel.For(0, 1100, i =>
 {
-// Використання методу розширення
-    dev.PrintInfo();
+    SmartDevice dev = (i % 2 == 0) ? LightDevice.CreateNew() : ClimateDevice.CreateNew();
+    service.CreateAsync(dev).Wait();
+});
+
+// 2. Обчислення статистики за допомогою LINQ (Min, Max, Average)
+var lights = service.OfType<LightDevice>().ToList();
+if (lights.Any())
+{
+    Console.WriteLine($"\n--- Статистика освітлення ({lights.Count} шт) ---");
+    Console.WriteLine($"Максимальна яскравість: {lights.Max(l => l.Brightness)}");
+    Console.WriteLine($"Мінімальна яскравість: {lights.Min(l => l.Brightness)}");
+    Console.WriteLine($"Середня яскравість: {lights.Average(l => l.Brightness):F2}");
 }
 
-// 2. Тест методів та статики
-lamp.TurnOn();
-Console.WriteLine(SmartDevice.GetSystemStatus());
+// 3. Приклад примітива синхронізації SemaphoreSlim
+Console.WriteLine("\nДемонстрація SemaphoreSlim (обмеження до 2 потоків):");
+SemaphoreSlim semaphore = new SemaphoreSlim(2);
+await Task.Run(async () => {
+    await semaphore.WaitAsync();
+    Console.WriteLine("   Потік отримав доступ через семафор.");
+    semaphore.Release();
+});
 
-// 3. Тест додаткового завдання
-string path = "devices.json";
-deviceService.Save(path);
-Console.WriteLine($"\nДані збережено у файл: {path}");
-
-// 4. Тест видалення
-deviceService.Remove(lamp);
-Console.WriteLine($"Після видалення лампи залишилось: {deviceService.ReadAll().Count()} пристроїв");
-
-// 5. Тест завантаження 
-deviceService.Load(path);
-Console.WriteLine($"Дані відновлено з файлу. Пристроїв знову: {deviceService.ReadAll().Count()}");
+await service.SaveAsync();
+Console.WriteLine("\nРоботу завершено. Дані збережено.");
