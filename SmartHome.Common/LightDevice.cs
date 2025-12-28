@@ -1,4 +1,4 @@
-﻿namespace SmartHome.Common;
+﻿using SmartHome.Common;
 
 public class LightDevice : SmartDevice
 {
@@ -6,13 +6,17 @@ public class LightDevice : SmartDevice
     public string Color { get; set; }
     public string BulbType { get; set; }
 
-    // Потрібен порожній конструктор для десеріалізації
     public LightDevice() : base() { }
+    public LightDevice(string name, int brightness) : base(name) { Brightness = brightness; }
 
-    public LightDevice(string name, int brightness = 50) : base(name)
+    // Статичний метод для генерації (Завдання лаб 2)
+    public static LightDevice CreateNew()
     {
-        Brightness = brightness;
-        Color = "White";
-        BulbType = "LED";
+        var rnd = new Random();
+        return new LightDevice($"Лампа #{rnd.Next(1, 1000)}", rnd.Next(0, 101))
+        {
+            Color = "White",
+            BulbType = "LED"
+        };
     }
 }

@@ -14,10 +14,10 @@ public class SmartHomeService<T> : ICrudService<T> where T : class
         return _items.FirstOrDefault(x => (Guid)x.GetType().GetProperty("Id")?.GetValue(x) == id);
     }
 
-    public void Update(T element) { /* Реалізація за потребою */ }
+    public void Update(T element) { }
     public void Remove(T element) => _items.Remove(element);
 
-// Додаткове завдання: Збереження у файл 
+    // Додаткове завдання: Збереження у файл 
     public void Save(string filePath)
     {
         string json = JsonSerializer.Serialize(_items);
