@@ -5,8 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace SmartHome.REST.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")] // Шлях: api/rooms
     public class RoomsController : ControllerBase
     {
         private readonly ICrudServiceAsync<RoomModel> _roomService;
@@ -17,7 +15,6 @@ namespace SmartHome.REST.Controllers
         }
 
         // Отримати всі кімнати (Read All)
-        [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomModel>>> GetAll()
         {
             var rooms = await _roomService.ReadAllAsync();
@@ -25,7 +22,6 @@ namespace SmartHome.REST.Controllers
         }
 
         // Отримати кімнату за ID (Read)
-        [HttpGet("{id}")]
         public async Task<ActionResult<RoomModel>> Get(Guid id)
         {
             var room = await _roomService.ReadAsync(id);
@@ -34,7 +30,6 @@ namespace SmartHome.REST.Controllers
         }
 
         // Створити нову кімнату (Create)
-        [HttpPost]
         public async Task<ActionResult> Create([FromBody] RoomModel room)
         {
             await _roomService.CreateAsync(room);
@@ -44,7 +39,6 @@ namespace SmartHome.REST.Controllers
         }
 
         // Видалити кімнату (Delete)
-        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var room = await _roomService.ReadAsync(id);
