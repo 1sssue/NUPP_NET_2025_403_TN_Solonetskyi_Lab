@@ -19,6 +19,7 @@
     <ProjectReference Include="..\SmartHome.Common\SmartHome.Common.csproj" />
 	  <ProjectReference Include="..\SmartHome.Infrastructure\SmartHome.Infrastructure.csproj" />
 	  <ProjectReference Include="..\SmartHome.Nosql\SmartHome.Nosql.csproj" />
+	  <ProjectReference Include="..\SmartHome.REST\SmartHome.REST.csproj" />
   </ItemGroup>
 
 </Project>
