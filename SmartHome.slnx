@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="SmartHome.Common/SmartHome.Common.csproj" />
   <Project Path="SmartHome.Console/SmartHome.Console.csproj" />
+  <Project Path="SmartHome.Infrastructure/SmartHome.Infrastructure.csproj" Id="b9e1fb0f-ce42-4b07-81f1-351d9e86e603" />
   <Project Path="SmartHome.Nosql/SmartHome.Nosql.csproj" Id="f231d3c8-2934-4d23-a506-e348fba602bd" />
 </Solution>
