@@ -5,8 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace SmartHome.REST.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")] // Шлях: api/devices
     public class DevicesController : ControllerBase
     {
         private readonly ICrudServiceAsync<SmartDeviceModel> _deviceService;
@@ -16,8 +14,6 @@ namespace SmartHome.REST.Controllers
             _deviceService = deviceService;
         }
 
-        [cite_start]// Отримати список пристроїв із пагінацією 
-        [HttpGet]
         public async Task<ActionResult<IEnumerable<SmartDeviceModel>>> GetPaged([FromQuery] int page = 1, [FromQuery] int size = 10)
         {
             [cite_start]// Використання асинхронного методу з пагінацією 
@@ -25,8 +21,6 @@ namespace SmartHome.REST.Controllers
             return Ok(devices);
         }
 
-        // Оновлення пристрою (Update)
-        [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] SmartDeviceModel device)
         {
             if (id != device.Id) return BadRequest();

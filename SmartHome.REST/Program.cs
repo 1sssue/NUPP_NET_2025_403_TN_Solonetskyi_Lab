@@ -2,6 +2,7 @@
 using SmartHome.Common;
 using SmartHome.Infrastructure;
 using SmartHome.Infrastructure.Models;
+using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,3 +36,36 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Налаштування Identity
+builder.Services.AddIdentity<SmartHomeUser, IdentityRole>()
+    .AddEntityFrameworkStores<SmartHomeContext>()
+    .AddDefaultTokenProviders();
+
+// Налаштування автентифікації JWT
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Ваш_Дуже_Секретний_Ключ_32_Символи"))
+    };
+});
+
+public class DevicesController : ControllerBase
+{
+    // Дозволено всім авторизованим
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetAll() { ... }
+
+    // Тільки для Адміна (наприклад, видалення)
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id) { ... }
+}
