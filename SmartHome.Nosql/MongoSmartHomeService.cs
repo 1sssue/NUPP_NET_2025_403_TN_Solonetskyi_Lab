@@ -16,14 +16,16 @@ public class MongoSmartHomeService<T> : ICrudServiceAsync<T> where T : SmartDevi
     {
         try
         {
-            // Виправляє помилку серіалізації GUID для нових версій драйвера
-#pragma warning disable CS0618
-            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
-#pragma warning restore CS0618
+            // Реєстрація серіалізатора для Guid (виправляє помилку зі скріншоту 2)
+            MongoDB.Bson.Serialization.BsonSerializer.RegisterSerializer(
+                new MongoDB.Bson.Serialization.Serializers.GuidSerializer(MongoDB.Bson.GuidRepresentation.Standard));
         }
-        catch { /* Вже зареєстровано */ }
+        catch { }
     }
-
+    public async Task<T?> ReadAsync(Guid id)
+    {
+        return await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
     public MongoSmartHomeService(string connectionString, string databaseName)
     {
         var client = new MongoClient(connectionString);

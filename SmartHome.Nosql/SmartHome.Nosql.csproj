@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SmartHome.Common\SmartHome.Common.csproj" />
+    <ProjectReference Include="..\SmartHome.Console\SmartHome.Console.csproj" />
+    <ProjectReference Include="..\SmartHome.Nosql\SmartHome.Nosql.csproj" />
   </ItemGroup>
 
 </Project>
