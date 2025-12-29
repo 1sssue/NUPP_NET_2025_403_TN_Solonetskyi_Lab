@@ -73,7 +73,7 @@ using (var context = new SmartHomeContext(optionsBuilder.Options))
     }
 }
 
-[cite_start]// 5. Додаткове завдання: NoSQL (MongoDB) 
+// 5. Додаткове завдання: NoSQL (MongoDB) 
 Console.WriteLine("\n=== Додаткове завдання (NoSQL - MongoDB) ===");
 try
 {
